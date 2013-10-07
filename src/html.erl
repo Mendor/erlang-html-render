@@ -2,7 +2,7 @@
 
 -export([render/1, render/2]).
 
--compile({inline, [{start_tag, 2}, {end_tag, 1}, {escapes, 0}, {space, 0}]}).
+-compile({inline, [{start_tag, 2}, {end_tag, 1}, {space, 0}]}).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -62,16 +62,13 @@ attr_value_render(Value) when is_atom(Value) ->
   atom_to_list(Value).
 
 escape(Input) ->
-  lists:foldl(fun ({P, R}, B) -> binary:replace(B, P, R, [global]) end, Input, escapes()).
+  lists:foldl(fun ({P, R}, B) -> binary:replace(B, P, R, [global]) end, Input, escapes:spec()).
 
 start_tag(Name, AttrList) ->
   [$<, atom_to_list(Name), [attr_render(Attr) || Attr <- AttrList], $>].
 
 end_tag(Name) ->
   [$<, $/, atom_to_list(Name), $>].
-
-escapes() ->
-  [{<<"&">>, <<"&amp;">>}, {<<"<">>, <<"&lt;">>}, {<<">">>, <<"&gt;">>}].
 
 space() ->
   32.
